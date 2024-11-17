@@ -1,0 +1,10 @@
+requests
+PyYAML
+python-Levenshtein
+flask
+gunicorn
+pytz
+asyncio
+tapo
+python-nmap
+sqlalchemy
