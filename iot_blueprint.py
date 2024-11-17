@@ -2,6 +2,8 @@ import logging
 
 from flask import Blueprint, jsonify, request
 
+from iot_server import config
+
 logging.basicConfig(level=logging.INFO)
 
 # Create a Flask Blueprint
@@ -36,4 +38,12 @@ def import_devices():
 
     from iot_server import importer
     importer.import_devices(ip_range)
+
+    path_to_rest_config = config.get('path_to_rest_config')
+
+    if path_to_rest_config:
+        data = importer.generate_data_object()
+        importer.store_yaml_from_object(data, path_to_rest_config)
+        logging.info(f"Data object stored in {path_to_rest_config}")
+
     return jsonify({'message': f'Devices from IP range {ip_range} imported successfully.'})

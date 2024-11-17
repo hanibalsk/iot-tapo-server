@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  plex-webhook:
+    image: registry.rlt.sk/iot-tapo-server:latest
+    container_name: iot-tapo-server
+    ports:
+      - "4667:4667"
+    volumes:
+      - /data:/data
+      - /rest:/rest
+    environment:
+      FLASK_PORT: 4667
+      FLASK_ENV: production
+      FLASK_DEBUG: 'false'
+      CONFIG_PATH: /data/config.yaml
+    restart: unless-stopped

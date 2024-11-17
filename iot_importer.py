@@ -1,14 +1,18 @@
+import asyncio
 import logging
 
-import asyncio
+import yaml
 
 from iot_database import IoTDeviceDatabase
 from iot_scan import TapoNetworkScanner
 
 logging.basicConfig(level=logging.INFO)
 
+
 class Importer:
     def __init__(self, user, password, db_name="iot_devices.db"):
+        self.user = user
+        self.password = password
         self.scanner = TapoNetworkScanner(user, password)
         self.db = IoTDeviceDatabase(db_name)
 
@@ -50,3 +54,35 @@ class Importer:
                 logging.info(f"Device {device_data['nickname']} at IP {device_data['ip']} added to the database.")
             else:
                 logging.info(f"Device at IP {device['ip']} does not have detailed information to add to the database.")
+
+    def generate_data_object(self):
+        account_info = {
+            "username": self.user,
+            "password": self.password
+        }
+
+        devices = self.db.get_all_devices()
+        devices_list = [
+            {
+                "name": device.nickname,
+                "device_type": device.device_type,
+                "ip_addr": device.ip
+            }
+            for device in devices
+        ]
+
+        data = {
+            "account": account_info,
+            "devices": devices_list
+        }
+        logging.info("Generated data object.")
+        return data
+
+    @staticmethod
+    def store_yaml_from_object(data_object, path_to_yaml):
+        try:
+            with open(path_to_yaml, 'w') as yaml_file:
+                yaml.dump(data_object, yaml_file, default_flow_style=False)
+            logging.info(f"YAML file successfully stored at: {path_to_yaml}")
+        except Exception as e:
+            logging.error(f"Failed to store YAML file: {e}")

@@ -1,0 +1,9 @@
+tapo:
+  username: "<redacted>"  # Tapo account username (anonymized for security)
+  password: "<redacted>"  # Tapo account password (anonymized for security)
+
+database: "iot_devices.db"  # Path to the database file
+log_file: "/data/server.log"  # Path to the log file
+
+# https://github.com/hanibalsk/tapo-rest-crossplatform
+path_to_rest_config: "/rest/config.yaml"  # Path to the REST configuration file (optional)
