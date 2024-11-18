@@ -1,7 +1,6 @@
 import asyncio
+import json
 import logging
-
-import yaml
 
 from iot_database import IoTDeviceDatabase
 from iot_scan import TapoNetworkScanner
@@ -79,10 +78,10 @@ class Importer:
         return data
 
     @staticmethod
-    def store_yaml_from_object(data_object, path_to_yaml):
+    def store_json_from_object(data_object, path_to_json):
         try:
-            with open(path_to_yaml, 'w') as yaml_file:
-                yaml.dump(data_object, yaml_file, default_flow_style=False)
-            logging.info(f"YAML file successfully stored at: {path_to_yaml}")
+            with open(path_to_json, 'w') as json_file:
+                json.dump(data_object, json_file, indent=4)
+            logging.info(f"JSON file successfully stored at: {path_to_json}")
         except Exception as e:
-            logging.error(f"Failed to store YAML file: {e}")
+            logging.error(f"Failed to store JSON file: {e}")

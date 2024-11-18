@@ -1,5 +1,6 @@
 import logging
 import os
+from logging.handlers import RotatingFileHandler
 
 from flask import Flask
 
@@ -16,7 +17,29 @@ config_path = os.getenv("CONFIG_PATH", "config.yaml")
 config = load_config(config_path)
 
 # Configure logging
-log_file = config.get('log_file', '/data/logging.log')
+log_file = config.get('log_file', '/data/server.log')
+
+# Create logfile if it does not exist
+if not os.path.exists(log_file):
+    with open(log_file, "w") as f:
+        f.write("")
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# Set up logging to console and log file
+console_handler = logging.StreamHandler()
+console_handler.setLevel(logging.INFO)
+file_handler = RotatingFileHandler(log_file, maxBytes=5 * 1024 * 1024, backupCount=3)
+file_handler.setLevel(logging.INFO)
+
+# Define the logging format and add handlers to the logger
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+console_handler.setFormatter(formatter)
+file_handler.setFormatter(formatter)
+
+logger.addHandler(console_handler)
+logger.addHandler(file_handler)
 
 # Initialize database
 db = IoTDeviceDatabase(config.get('database', 'iot_database.db'))
